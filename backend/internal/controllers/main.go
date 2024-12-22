@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v3"
-	"github.com/st0pcha/task-manager/backend/pkg/response"
+	"github.com/gofiber/fiber/v2"
+	"github.com/st0pcha/task-manager/backend/pkg/utils"
 )
 
-func GetHelloWorld(ctx fiber.Ctx) error {
-	return response.SuccessResponse(ctx, fiber.StatusOK, "Hello world!", nil)
+func GetHelloWorld(c *fiber.Ctx) error {
+	return utils.SuccessResponse(c, fiber.StatusOK, "Hello world!", nil)
 }

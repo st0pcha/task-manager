@@ -3,7 +3,6 @@ package config
 import (
 	"log"
 	"os"
-	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -18,7 +17,7 @@ func Initialize() *Config {
 		Server: Server{
 			Host:         os.Getenv("SERVER_HOST"),
 			Port:         os.Getenv("SERVER_PORT"),
-			AllowOrigins: strings.Split(os.Getenv("SERVER_ALLOWED_ORIGINS"), ","),
+			AllowOrigins: os.Getenv("SERVER_ALLOWED_ORIGINS"),
 		},
 		Postgres: PostgresDatabase{
 			DSN: os.Getenv("POSTGRES_DSN"),

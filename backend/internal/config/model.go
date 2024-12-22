@@ -8,7 +8,7 @@ type Config struct {
 type Server struct {
 	Host         string
 	Port         string
-	AllowOrigins []string
+	AllowOrigins string
 }
 
 type PostgresDatabase struct {
