@@ -12,9 +12,13 @@ import (
 func main() {
 	log.Println("starting server...")
 	cfg := config.Initialize()
+
 	db.Connect(cfg.Postgres.DSN)
-	if err := db.AutoMigrate(&dal.User{}, &dal.Task{}); err != nil {
-		log.Panic("failed to migrate database:", err)
+	if cfg.IsDev() {
+		if err := db.AutoMigrate(&dal.User{}, &dal.Task{}); err != nil {
+			log.Panic("failed to migrate database:", err)
+		}
 	}
+
 	api.CreateAPI(cfg)
 }

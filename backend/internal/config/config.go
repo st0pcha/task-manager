@@ -14,6 +14,7 @@ func Initialize() *Config {
 	}
 
 	return &Config{
+		Mode: os.Getenv("MODE"),
 		Server: Server{
 			Host:         os.Getenv("SERVER_HOST"),
 			Port:         os.Getenv("SERVER_PORT"),
