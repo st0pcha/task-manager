@@ -20,5 +20,8 @@ func Initialize() *Config {
 			Port:         os.Getenv("SERVER_PORT"),
 			AllowOrigins: strings.Split(os.Getenv("SERVER_ALLOWED_ORIGINS"), ","),
 		},
+		Postgres: PostgresDatabase{
+			DSN: os.Getenv("POSTGRES_DSN"),
+		},
 	}
 }
