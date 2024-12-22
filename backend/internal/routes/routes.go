@@ -7,8 +7,15 @@ import (
 
 func RegisterRoutes(app *fiber.App) {
 	mainController(app)
+	authController(app)
 }
 
 func mainController(app *fiber.App) {
 	app.Get("/", controllers.GetHelloWorld)
+}
+
+func authController(app *fiber.App) {
+	g := app.Group("/auth")
+	g.Post("/register", controllers.Register)
+	g.Post("/login", controllers.Register)
 }
