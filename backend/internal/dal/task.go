@@ -30,3 +30,7 @@ func FindTaskByID(dest interface{}, id string) *gorm.DB {
 func FindTasksByUserID(dest interface{}, userID uuid.UUID) *gorm.DB {
 	return FindTask(dest, "user_id = ?", &userID)
 }
+
+func DeleteTaskByID(id string) *gorm.DB {
+	return db.DB.Where("id = ?", id).Delete(&Task{})
+}

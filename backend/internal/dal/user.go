@@ -28,3 +28,7 @@ func FindUserByID(dest interface{}, id string) *gorm.DB {
 func FindUserByEmail(dest interface{}, email string) *gorm.DB {
 	return FindUser(dest, "email = ?", &email)
 }
+
+func DeleteUserByID(id string) *gorm.DB {
+	return db.DB.Where("id = ?", id).Delete(&User{})
+}
