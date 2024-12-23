@@ -11,6 +11,7 @@ func RegisterRoutes(app *fiber.App) {
 
 	mainController(api)
 	authController(api)
+	usersController(api)
 }
 
 func mainController(r fiber.Router) {
@@ -23,4 +24,9 @@ func authController(r fiber.Router) {
 	g.Post("/login", controllers.Login)
 	g.Post("/refresh", middleware.IsAuth, controllers.RefreshTokens)
 	g.Post("/logout", middleware.IsAuth, controllers.Logout)
+}
+
+func usersController(r fiber.Router) {
+	g := r.Group("/users")
+	g.Get("/", middleware.IsAuth, controllers.GetSelfUserWithTasks)
 }
