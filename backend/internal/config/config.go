@@ -7,12 +7,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var JWTSecretKey []byte
+
 func Initialize() *Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("error loading .env file")
 	}
 
+	JWTSecretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 	return &Config{
 		Mode: os.Getenv("MODE"),
 		Server: Server{

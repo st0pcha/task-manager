@@ -2,13 +2,14 @@ package services
 
 import (
 	"errors"
-	"log"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/st0pcha/task-manager/backend/internal/dal"
 	"github.com/st0pcha/task-manager/backend/internal/types"
 	"github.com/st0pcha/task-manager/backend/pkg/utils"
 	"github.com/st0pcha/task-manager/backend/pkg/utils/checkers"
+	"github.com/st0pcha/task-manager/backend/pkg/utils/jwt"
 	"github.com/st0pcha/task-manager/backend/pkg/utils/password"
 	"gorm.io/gorm"
 )
@@ -18,8 +19,6 @@ func RegisterUser(c *fiber.Ctx, req *types.RegisterDTO) error {
 	if err := dal.FindUserByEmail(user, req.Email).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
 		return utils.ErrorResponse(c, fiber.StatusConflict, "user with this email already exists")
 	}
-
-	log.Println(3)
 
 	if err := checkers.ValidateEmail(req.Email); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
@@ -58,8 +57,24 @@ func LoginUser(c *fiber.Ctx, req *types.AuthDTO) error {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid credentials")
 	}
 
-	return utils.SuccessResponse(c, fiber.StatusOK, "user logged in", &types.UserResponse{
-		Email: user.Email,
-		ID:    user.ID.String(),
+	accessToken, _, err := generateAndSetTokens(c, user)
+	if err != nil {
+		return err
+	}
+
+	return utils.SuccessResponse(c, fiber.StatusOK, "user logged in", &types.AuthResponse{
+		User:        types.UserResponse{Email: user.Email, ID: user.ID.String()},
+		AccessToken: accessToken,
 	})
+}
+
+func generateAndSetTokens(c *fiber.Ctx, user *dal.User) (string, string, error) {
+	accessToken, refreshToken, err := jwt.GenerateJWTTokens(user)
+	if err != nil {
+		return "", "", utils.ErrorResponse(nil, fiber.StatusInternalServerError, "error generating JWT token")
+	}
+
+	tokenExpires := time.Now().Add(jwt.AccessTokenTTL)
+	utils.SetCookie(c, jwt.RefreshToken, refreshToken, tokenExpires)
+	return accessToken, refreshToken, nil
 }

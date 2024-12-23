@@ -10,3 +10,8 @@ type RegisterDTO struct {
 
 	PasswordRepeat string `json:"repeated_password"`
 }
+
+type AuthResponse struct {
+	User        UserResponse `json:"user"`
+	AccessToken string       `json:"access_token"`
+}
