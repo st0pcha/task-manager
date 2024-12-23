@@ -22,3 +22,11 @@ func Login(c *fiber.Ctx) error {
 	}
 	return services.LoginUser(c, &req)
 }
+
+func RefreshTokens(c *fiber.Ctx) error {
+	return services.RefreshJWTTokens(c)
+}
+
+func Logout(c *fiber.Ctx) error {
+	return services.LogoutUser(c)
+}

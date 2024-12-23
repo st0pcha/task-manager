@@ -21,4 +21,6 @@ func authController(r fiber.Router) {
 	g := r.Group("/auth")
 	g.Post("/register", controllers.Register)
 	g.Post("/login", controllers.Login)
+	g.Post("/refresh", middleware.IsAuth, controllers.RefreshTokens)
+	g.Post("/logout", middleware.IsAuth, controllers.Logout)
 }

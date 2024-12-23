@@ -68,6 +68,28 @@ func LoginUser(c *fiber.Ctx, req *types.AuthDTO) error {
 	})
 }
 
+func RefreshJWTTokens(c *fiber.Ctx) error {
+	user, err := utils.GetSelf(c)
+	if err != nil {
+		return err
+	}
+
+	accessToken, _, err := generateAndSetTokens(c, user)
+	if err != nil {
+		return err
+	}
+
+	return utils.SuccessResponse(c, fiber.StatusOK, "tokens refreshed", &types.AuthResponse{
+		User:        types.UserResponse{Email: user.Email, ID: user.ID.String()},
+		AccessToken: accessToken,
+	})
+}
+
+func LogoutUser(c *fiber.Ctx) error {
+	utils.ClearCookie(c, jwt.RefreshToken)
+	return utils.SuccessResponse(c, fiber.StatusOK, "user logged out", nil)
+}
+
 func generateAndSetTokens(c *fiber.Ctx, user *dal.User) (string, string, error) {
 	accessToken, refreshToken, err := jwt.GenerateJWTTokens(user)
 	if err != nil {
